@@ -5,6 +5,7 @@
   2. asynchronous
   3. stream based communication
   4. backpressure handling
+- the idea of this paradigm is to handle your IO operations more efficiently
 
 ## Introduction
 
@@ -372,3 +373,14 @@ Publisher<String> mono = Mono.just("hello world");
 ```
 
 - `Mono.just` - when the value is already stored in memory and we just want to emit
+- `Netty` - capable of sending a non-blocking HTTP request
+
+### Event loop
+
+- one thread and one queue
+- whenever a client sends a request, that request is added to the queue (outbound queue)
+- the event loop knows that a req/resp cycle will be slow, so when it sends the first request, it will not sit idle waiting for that response to be received, but rather it sends the next request
+- so it how it sends all request at the same time (like juggling)
+- when the response comes in, it is received in the inbound queue (the order of receiving is not necessarily the same as the order of sending)
+
+- why Netty: without we would have to write a lot of code (a bunch of callbacks)
