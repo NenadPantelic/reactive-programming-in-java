@@ -384,3 +384,13 @@ Publisher<String> mono = Mono.just("hello world");
 - when the response comes in, it is received in the inbound queue (the order of receiving is not necessarily the same as the order of sending)
 
 - why Netty: without we would have to write a lot of code (a bunch of callbacks)
+
+- `Collections` vs `Mono/Flux`
+  - `List<T>`, `Set<T>`
+    - represent the data in memory
+    - storage
+  - `Mono/Flux`
+    - represent a tunnel/pipe through which data can be transferred from one place to another
+- Collections -> glasses/bottles/buckets of water
+- `Mono/Flux` -> pipes through which the water flows; can transfer an infinite amount of data, while data structures are limited by system memory
+- microservices can use flux to transfer data between themselves
