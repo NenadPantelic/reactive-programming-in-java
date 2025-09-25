@@ -13,4 +13,12 @@ public class ExternalServiceClient extends AbstractHttpClient {
                 .responseContent()
                 .asString(); // streaming response - all product with that productId (only one ofc)
     }
+
+    public Flux<Integer> getPriceChanges() {
+        return this.httpClient.get()
+                .uri("/demo02/stock/stream")
+                .responseContent()
+                .asString()
+                .map(Integer::parseInt);
+    }
 }

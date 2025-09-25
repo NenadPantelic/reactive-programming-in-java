@@ -394,3 +394,60 @@ Publisher<String> mono = Mono.just("hello world");
 - Collections -> glasses/bottles/buckets of water
 - `Mono/Flux` -> pipes through which the water flows; can transfer an infinite amount of data, while data structures are limited by system memory
 - microservices can use flux to transfer data between themselves
+
+#### Summary
+
+- Mono can emit 0 or 1 item
+- The correct order for passing the arguments when we subscribe to a Publisher: `onNext`, `onError`, `onComplete`
+- Which signal will the subscriber first receive when it subscribes to this publisher:
+  ```java
+  Mono<Integer> get() {
+    return Mono.fromRunnable(() - {
+      int a = 1 * 2;
+    });
+  }
+  ```
+  Answer: `onComplete`
+- Which signals will the subscriber first receive when it subscribes to this publisher method?
+
+```java
+Mono<Integer> get() {
+  return Mono.fromSupplier(() -> 2 * 3);
+}
+```
+
+Answer: `onNext` and `onComplete`
+
+- Which signal can be expected when we subscribe to this mono?
+
+```java
+Mono<Integer> mono = Mono.empty();
+```
+
+Answer: `onComplete`
+
+- Which signal we could expect when we subscribe to this mono?
+
+```java
+Mono<Integer> mono = Mono.error(new RuntimeException("some msg"));
+```
+
+Answer: `onError`
+
+- Flux can emit 0, 1,...N items
+- `Flux.range(13, 17)` - will emit 17 items starting from 13
+- What items/signals will the following producer emit
+
+```
+Flux.range(3, 5)
+    .map(i -> i/(i-4))
+```
+
+Answer:
+
+```
+3 -> 3/-1 -> -3
+4 -> 4/(4-4) -> error
+```
+
+- bear in mind that the subscription must request an item in order to have it published
