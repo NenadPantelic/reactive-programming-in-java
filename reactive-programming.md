@@ -451,3 +451,29 @@ Answer:
 ```
 
 - bear in mind that the subscription must request an item in order to have it published
+- `curl -N <url>` - do not buffer the results
+- When a browser hits an endpoint that returns Flux, Spring is actually subscribing to that publisher (Flux is a publisher)
+- pseudocode (hitting an endpoint `Flux<Product> getProducts`):
+
+```java
+getProducts()
+  .subscribe(
+    // on next
+    // as soon as it is received, it is flushed to a connection (sent to client)
+    // if the response is streamed
+    product -> channel.writeAndFlush(product),
+    // if the client closes the connection
+    // subscription comes from the client
+    subscription -> channel.onClose(() -> subscription.cancel()
+  )
+```
+
+- If the code is synchronous (blocking):
+
+```java
+var list = getProducts(); // the whole list must be returned
+channel.writeAndFlush();
+```
+
+- Should the entire stack be reactive?
+  - it would be better, but is not a must
