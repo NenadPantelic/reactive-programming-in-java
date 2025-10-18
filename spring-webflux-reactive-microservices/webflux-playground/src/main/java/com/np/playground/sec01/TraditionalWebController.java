@@ -1,4 +1,4 @@
-package com.np.webflux_playground.sec01;
+package com.np.playground.sec01;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

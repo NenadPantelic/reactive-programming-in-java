@@ -477,3 +477,11 @@ channel.writeAndFlush();
 
 - Should the entire stack be reactive?
   - it would be better, but is not a must
+
+### R2DBC
+
+- JPA is a specficiation - it is for traditional synchronous programming
+- R2DBC is a separate specification - for reactive programming
+- So, R2DBC != JPA
+- prioritizes performance, scalability and streaming + backpressure
+- it does not have features like `@OneToMany`, `@ManyToMany`

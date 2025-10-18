@@ -1,4 +1,4 @@
-package com.np.webflux_playground.sec01;
+package com.np.playground.sec01;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,8 +8,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
-
-import java.awt.*;
 
 @RestController
 @RequestMapping("reactive")
