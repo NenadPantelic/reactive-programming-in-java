@@ -79,10 +79,11 @@ customer.setName("sam")
 ```
 
 - Complext queries/Join
-  - Prefer SQL: it is efficient, no N+1 problem
-  - With Repository:
-    - `@Query`
-    - database client
+    - Prefer SQL: it is efficient, no N+1 problem
+    - With Repository:
+        - `@Query`
+        - database client
+
 ```sql
 SELECT 
   p.*
@@ -109,3 +110,22 @@ WHERE
   p.description = :description
 ORDER BY co.amount DESC
 ```
+
+- Advantages of DTO
+
+1. model can have some fields, while DTO can omit them - e.g. the user entity contains password field,
+   but we do not want to expose it via API
+2. DTO can convert field values - e.g. time in database is stored in UTC, while we represent time in the API response in
+   local time
+3. DTO can be versioned
+4. Validation
+
+- reminder: Mono/Flux are publisher types
+- To return an error:
+    - return Mono<ResponseEntity>
+    - returning a Flux<ResponseEntity> does not make sense, Flux should be used to stream data; you cannot say
+      chunk A (200), chunk B (400), chunk C (500) etc.
+    - status code should be set only once
+- `ResponseEntity<Mono<T>>` and `ResponseEntity<Flux<T>>` make the response status and headers known immediately while
+  the body is provided asynchronously at a later point
+- `Mono<ResponseEntity<T>>` provides all three - response status, headers, and body, asynchronously at a later point
