@@ -135,3 +135,20 @@ ORDER BY co.amount DESC
 - `WebTestClient` - to write unit/integration tests (`exchange` method - sends the request and gets the result; it's a
   blocking, it is a test, so it's fine)
 - `jsonpath` is useful in `WebTestClient`
+
+#### Error handling
+- Spring framework kind of subscriber to the publisher type
+- when the controller throws an exception, it is passed to a controller advice which converts the exception
+to response
+- RFC 7807/RFC 9457
+  - structured error response
+  - machine/human-readable
+
+##### Problem Details
+| Properties 	| Description                                                                                                                 	|
+|------------	|-----------------------------------------------------------------------------------------------------------------------------	|
+| type       	| A link to the documentation for the callers to read more about the problem. If it is not provided, "about:blank" is assumed 	|
+| title      	| Human readable summary of the problem                                                                                       	|
+| status     	| HTTP status code                                                                                                            	|
+| detail     	| Detailed message specific to the problem                                                                                    	|
+| instance   	| The URI which caused the problem                                                                                            	|

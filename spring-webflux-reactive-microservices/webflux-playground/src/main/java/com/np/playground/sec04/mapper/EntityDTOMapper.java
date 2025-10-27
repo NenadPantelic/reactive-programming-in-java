@@ -1,7 +1,7 @@
-package com.np.playground.sec03.mapper;
+package com.np.playground.sec04.mapper;
 
-import com.np.playground.sec03.dto.CustomerDTO;
-import com.np.playground.sec03.entity.Customer;
+import com.np.playground.sec04.dto.CustomerDTO;
+import com.np.playground.sec04.entity.Customer;
 
 public class EntityDTOMapper {
 

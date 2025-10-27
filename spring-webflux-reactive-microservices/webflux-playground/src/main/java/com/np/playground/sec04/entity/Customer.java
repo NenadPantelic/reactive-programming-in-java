@@ -1,4 +1,4 @@
-package com.np.playground.sec03.entity;
+package com.np.playground.sec04.entity;
 
 import org.springframework.data.annotation.Id;
 

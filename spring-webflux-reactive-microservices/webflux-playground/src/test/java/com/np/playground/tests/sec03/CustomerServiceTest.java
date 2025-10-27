@@ -63,7 +63,7 @@ public class CustomerServiceTest {
     }
 
     @Test
-    public void createAndDeleteCustomer() {
+    public void testCreateAndDeleteCustomer() {
         var dto = new CustomerDTO(null, "marshall", "marshall@gmail.com");
         this.client.post()
                 .uri("/api/v1/customers")
@@ -84,7 +84,7 @@ public class CustomerServiceTest {
     }
 
     @Test
-    public void updateCustomer() {
+    public void testUpdateCustomer() {
         var dto = new CustomerDTO(null, "noel", "noel@gmail.com");
         this.client.put()
                 .uri("/api/v1/customers/10")
