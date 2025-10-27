@@ -129,3 +129,9 @@ ORDER BY co.amount DESC
 - `ResponseEntity<Mono<T>>` and `ResponseEntity<Flux<T>>` make the response status and headers known immediately while
   the body is provided asynchronously at a later point
 - `Mono<ResponseEntity<T>>` provides all three - response status, headers, and body, asynchronously at a later point
+- `Flux` should return 200 status code
+
+- `WebClient` - to send non-blocking HTTP requests
+- `WebTestClient` - to write unit/integration tests (`exchange` method - sends the request and gets the result; it's a
+  blocking, it is a test, so it's fine)
+- `jsonpath` is useful in `WebTestClient`
