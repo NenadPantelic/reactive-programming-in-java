@@ -137,18 +137,45 @@ ORDER BY co.amount DESC
 - `jsonpath` is useful in `WebTestClient`
 
 #### Error handling
+
 - Spring framework kind of subscriber to the publisher type
 - when the controller throws an exception, it is passed to a controller advice which converts the exception
-to response
+  to response
 - RFC 7807/RFC 9457
-  - structured error response
-  - machine/human-readable
+    - structured error response
+    - machine/human-readable
 
 ##### Problem Details
-| Properties 	| Description                                                                                                                 	|
-|------------	|-----------------------------------------------------------------------------------------------------------------------------	|
-| type       	| A link to the documentation for the callers to read more about the problem. If it is not provided, "about:blank" is assumed 	|
-| title      	| Human readable summary of the problem                                                                                       	|
-| status     	| HTTP status code                                                                                                            	|
-| detail     	| Detailed message specific to the problem                                                                                    	|
-| instance   	| The URI which caused the problem                                                                                            	|
+
+| Properties 	 | Description                                                                                                                 	 |
+|--------------|-------------------------------------------------------------------------------------------------------------------------------|
+| type       	 | A link to the documentation for the callers to read more about the problem. If it is not provided, "about:blank" is assumed 	 |
+| title      	 | Human readable summary of the problem                                                                                       	 |
+| status     	 | HTTP status code                                                                                                            	 |
+| detail     	 | Detailed message specific to the problem                                                                                    	 |
+| instance   	 | The URI which caused the problem                                                                                            	 |
+
+### R2DBC vs JPA/JDBC
+
+### WebFilter
+
+- an intermediary component between the server and the controller. It can manipulate the incoming request and outgoing
+  response.
+- useful to handle the cross-cutting concerns:  authentication, authorization, logging, monitoring, rate limiting
+- we can access path, header, parameters, cookies...etc
+- do not do request body validation! - the request body is deserialized in controller layer
+- we can chain multiple `WebFilter` to do multiple validations before the request reaches the controller
+
+- Assignment:
+    - we have two types of callers: `STANDARD` and `PRIME`
+    - Authn requirements - 401:
+        - all the callers are expected to provide a security header as part of requests - "auth-token"
+        - value
+            - "secret123" - `STANDARD`
+                - "secret456" - `PRIME`
+    - AuthZ requirements - 403:
+        - `STANDARD` - allowed to make only `GET` requests
+        - `PRIME` - allowed to make any types of calls
+
+- one filter can pass some attributes to another filter: `exchange.getAttributes().put(key, value)`
+- accessing attributes in controller: `@RequestAttribute(<attribute-name>) <attribute-type> attribute`
