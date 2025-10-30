@@ -179,3 +179,14 @@ ORDER BY co.amount DESC
 
 - one filter can pass some attributes to another filter: `exchange.getAttributes().put(key, value)`
 - accessing attributes in controller: `@RequestAttribute(<attribute-name>) <attribute-type> attribute`
+
+##### Functional endpoints
+```java
+route()
+        .GET("/customers", handler::getAllCustomers)
+        .GET("/customers/{id}", handler::getCustomer)
+        .POST("/customers", handler::saveCustomer)
+        ...
+        .onError(CustomerNotFoundException.class, this::badRequestHandler)
+        .build();
+```
