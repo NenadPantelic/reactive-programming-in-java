@@ -485,3 +485,38 @@ channel.writeAndFlush();
 - So, R2DBC != JPA
 - prioritizes performance, scalability and streaming + backpressure
 - it does not have features like `@OneToMany`, `@ManyToMany`
+
+## R2DBC vs JDBC/JPA
+
+- resource efficiency
+  - how much system resources they use!
+- throughput
+  - number of tasks executed per unit time!
+- when doing the comparison testing
+  - do NOT bring other applications/web layer into the test
+  - do NOT use a long running query - we want to test R2DBC vs JDBC/JPA, not the DB engine, it could be good for Postgres vs MySQL (long running queries)
+- two Maven modules (`spring-data-jpa` vs `spring-data-r2dbc`) -> customer table (10 million records)
+
+- R2DBC is new! Postgres v1.0.0 was released in late 2022
+- do the performance measurement/benchmarking
+- Spring Data JPA to reactive
+
+```java
+Mono.fromSupplier(() -> jpaRepository.findById(...))
+  .subscribeOn(Schedulers.boundedElastic()) // very important; dedicated thread pool, prevents blocking the event loop thread
+  .map(...)
+  .doOnNext(...)
+```
+
+## Reactive manifesto (Reactive systems)
+
+| Principle      | Description                                                                                                               |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| Responsive     | The ability of the system to react/respond quickly!                                                                       |
+| Resilient      | The ability of the system to stay resonsive even in case of failures!                                                     |
+| Elastic        | The ability of the system to stay responsive even under varying workload/system resources                                 |
+| Message Driven | The ability of the systems to communicate using messages in a non-blocking manner by applying back pressure if necessary! |
+
+![](images/reactive-traits.svg)
+
+https://www.reactivemanifesto.org/
