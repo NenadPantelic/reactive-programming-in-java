@@ -37,6 +37,13 @@ public class RouterConfiguration {
                 .GET("/api/v1/customers/{id}", customerRequestHandler::getCustomer)
                 .onError(CustomerNotFoundException.class, exceptionHandler::handleException)
                 .onError(InvalidInputException.class, exceptionHandler::handleException)
+                .filter((request, next) -> {
+                    return next.handle(request);
+                    // return ServerResponse.badRequest().build();
+                })
+                // .filter((request, next) -> {
+                // return ServerResponse.badRequest().build();
+                //})
                 .build();
     }
 
