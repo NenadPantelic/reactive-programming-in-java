@@ -181,12 +181,53 @@ ORDER BY co.amount DESC
 - accessing attributes in controller: `@RequestAttribute(<attribute-name>) <attribute-type> attribute`
 
 ##### Functional endpoints
+
 ```java
 route()
-        .GET("/customers", handler::getAllCustomers)
-        .GET("/customers/{id}", handler::getCustomer)
-        .POST("/customers", handler::saveCustomer)
+        .GET("/customers",handler::getAllCustomers)
+        .GET("/customers/{id}",handler::getCustomer)
+        .POST("/customers",handler::saveCustomer)
         ...
-        .onError(CustomerNotFoundException.class, this::badRequestHandler)
+        .onError(CustomerNotFoundException.class,this::badRequestHandler)
         .build();
+```
+
+### WebClient
+
+- Reactor based fluent API for making HTTP requests
+    - wrapper around reactor-netty
+- Non-blocking
+- Immutable
+- Thread-safe!
+- retrieve method - sends the request and receives a response in a non-blocking manner
+
+
+- Wrapper around reactor-netty
+    - it uses 1 thread/CPU
+    - it is non-blocking
+
+- Asynchronous event loop
+    - requests are sent without through an outbound queue
+    - the async code client does not block the current thread until the response comes back, it simply moves forward
+    - once the response comes through an inbound queue thread accepts it and processes it
+
+- URI variables
+```java
+this.client.get()
+        .uri("/lec01/product/{id}", i)
+        .retrieve()
+        .bodyToMono(Product.class);
+
+this.client.get()
+        .uri("/{lec}/product/{id}", "lec01", i)
+        .retrieve()
+        .bodyToMono(Product.class);
+
+var map = Map.of(
+        "lec", "lec01",
+        "id", 1);
+this.client.get()
+        .uri("/lec01/product/{id}", map)
+        .retrieve()
+        .bodyToMono(Product.class);
 ```
