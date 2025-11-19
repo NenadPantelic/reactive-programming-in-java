@@ -212,22 +212,58 @@ route()
     - once the response comes through an inbound queue thread accepts it and processes it
 
 - URI variables
+
 ```java
 this.client.get()
-        .uri("/lec01/product/{id}", i)
+        .uri("/lec01/product/{id}",i)
         .retrieve()
         .bodyToMono(Product.class);
 
-this.client.get()
-        .uri("/{lec}/product/{id}", "lec01", i)
+        this.client.get()
+        .uri("/{lec}/product/{id}","lec01",i)
         .retrieve()
         .bodyToMono(Product.class);
 
-var map = Map.of(
-        "lec", "lec01",
-        "id", 1);
-this.client.get()
-        .uri("/lec01/product/{id}", map)
+        var map=Map.of(
+        "lec","lec01",
+        "id",1);
+        this.client.get()
+        .uri("/lec01/product/{id}",map)
         .retrieve()
         .bodyToMono(Product.class);
 ```
+
+#### retrieve vs exchange
+
+- exchange will allow you to get headers, cookies and status code (through `ClientResponse`)
+
+##### Exchange filter function
+
+- it is applied on the client side as a client filter
+- handling the cross-cutting concerns (logging, monitoring, setting, authentication, token...) the same way the filter
+  in server does
+
+```java
+// ExchangeFilterFunction
+Mono<ClientResponse> filter(ClientRequest request,ExchangeFunction next);
+```
+
+- mutate the WebClient
+
+```java
+import org.springframework.context.annotation.Bean;
+
+@Bean
+public WebClient orderClient(){
+        return WebClient.builder()
+        .baseUrl("http://order-service.com")
+        .build();
+        }
+
+        var newClient=oldClient.mutate()
+        .baseUrl("http://new-base-url")
+        .build();
+```
+
+- `bodyValue` - for things that is already in memory
+- `body` - for the publisher who should emit data
