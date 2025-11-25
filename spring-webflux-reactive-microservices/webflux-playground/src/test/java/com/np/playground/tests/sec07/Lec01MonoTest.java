@@ -1,6 +1,5 @@
 package com.np.playground.tests.sec07;
 
-import com.np.playground.tests.sec07.AbstractWebClient;
 import com.np.playground.tests.sec07.dto.Product;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.reactive.function.client.WebClient;

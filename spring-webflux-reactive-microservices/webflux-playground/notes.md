@@ -157,6 +157,15 @@ ORDER BY co.amount DESC
 
 ### R2DBC vs JPA/JDBC
 
+- `Schedulers.boundedElastic()` - to offload synchronous calls
+- R2DBC fetches rows lazily, only as requested by the subscriber. In that way, it handles the backpressure in reactive
+  streams
+- concat vs merge in reactor (concat sequentially merge streams one-by-one as they are complete)
+  ![](images/concat.png)
+  ![](images/merge.png)
+- what happens if a downstream subscriber cancels a flux while rows are still being streamed from R2DBC?
+  A: The driver stops fetching further rows and cancels the underlying query
+
 ### WebFilter
 
 - an intermediary component between the server and the controller. It can manipulate the incoming request and outgoing
@@ -267,3 +276,60 @@ public WebClient orderClient(){
 
 - `bodyValue` - for things that is already in memory
 - `body` - for the publisher who should emit data
+
+## Reactive data streaming: high-volume uploads & downloads
+
+- 4 types of communication
+    - request -> response
+    - request -> streaming response
+    - streaming request -> response
+    - streaming request -> streaming response
+- Use case: Create a million products
+- Traditional approach:
+    - POST
+        - Increased network traffic/latency
+        - unnecessary wait time
+        - redundant validation
+    - CSV file upload
+        - file could be corrupt
+        - "," escape
+        - complex nested data structure
+- Streaming approach
+    - set up a connection once and keep sending the messages in a streaming fashion
+    - no need to wait for previous request to complete
+    - reduced network traffic/latency
+    - use JSON to create a product
+
+#### JSON lines
+
+- JSON array - good for smaller data sets, but you have millions of products, then it will have to keep the whole JSON
+  array in memory
+  (it has to store the closing bracket in memory to make a valid JSON object)
+- JSON line - ND-JSON
+    - new line delimited; each line is 1 JSON
+        - self-contained
+        - easy to parse
+        - great for streaming!
+        - massive datasets!
+
+- @RequestBody - non-blocking construct
+
+- @RequestBody will wait for the whole body content to be received before deserializing into a native API
+
+```java
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
+@PostMapping
+public Mono<CustomerDTO> saveCustomer(@RequestBody CustomerDTO customer){
+        }
+```
+
+```java
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
+@PostMapping
+public Mono<CustomerDTO> saveCustomer(@RequestBody Mono<CustomerDTO> customer){
+        }
+```
