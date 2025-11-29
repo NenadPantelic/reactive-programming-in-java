@@ -333,3 +333,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 public Mono<CustomerDTO> saveCustomer(@RequestBody Mono<CustomerDTO> customer){
         }
 ```
+
+## Server Sent Events (SSE/EventSource)
+
+- if you have the election results platform or a site showing the result of a very popular game we will have so many
+  requests (frequent requests). A big part of that would be waste requests, no update of results
+- SSE
+    - Stream events from backend to frontend
+    - one-way communication
+    - for SSE - this is a MediaType that browsers do understand - `MediaType.TEXT_EVENT_STREAM_VALUE`
