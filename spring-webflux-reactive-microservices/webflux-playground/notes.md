@@ -342,3 +342,79 @@ public Mono<CustomerDTO> saveCustomer(@RequestBody Mono<CustomerDTO> customer){
     - Stream events from backend to frontend
     - one-way communication
     - for SSE - this is a MediaType that browsers do understand - `MediaType.TEXT_EVENT_STREAM_VALUE`
+
+## High performance
+
+### gzip
+
+- if the response is big (in KBs), the client might observe increased response time. The apps might appear to be
+  performing,
+  poorly will respond slowly, but it could be just network latency
+- gzip: technique to compress the response before sending over the network; the size is reduced, it will reach the
+  client
+  sooner
+- it works well in a congested network + response size is large
+- Note:
+    - server requires additional processing to compress
+    - it might have negative effect when the response size is small!
+    - do NOT use local machine to test! You will NOT see any improvement! (it is for network latency)
+
+- gzip properties
+    - server side
+  ```java
+  server.compression.enabled=true
+  # the response size must be at least 2048 bytes
+  server.compression.min-response-size=2048
+  # apply it to these MIME types only
+  server.compression.mime-types=application/json,application/xml
+  ```
+    - client side
+  ```
+  Accept-Encoding: gzip
+  ```
+- performance has to be measured!
+
+### Connection  Pooling!
+
+- Connection setup takes time!
+- Keep-alive - to reuse connections!
+- HTTP/1.1
+    - 1 connection per request; if you send a request, you cannot send another request until the response comes back
+    - 3-step TCP handshake
+    - when the connection is set up, the OS exposes an outbound port, e.g. 53123, it hits the remote machine port
+    - the server will process the request and flush it, so the response will be sent via that connection
+    - if the server needs too much time to respond, that connection is occupied, and we cannot hit another request to
+      that remote server until the original request is handled, i.e. that response is received.
+    - to fire another request, the OS will have to set up a new outbound port to fire another request
+
+- Handy commands
+    - `netstat -an | grep -w 127.0.0.1.7070`
+    - to watch `watch 'netstat -an | grep -w 127.0.0.1.7070'`
+
+### HTTP/2
+
+- HTTP/1.1 - 1997
+    - needs one connection per request
+- HTTP/2 - 2015
+    - Google introduced; they used Spidey internally and then they proposed HTTP/2
+    - Pros
+        - Multiplexing - it needs just one connection, it can send multiple concurrent requests just by using one single
+          connection
+        - Binary protocol; whereas HTTP/1.1 is textual
+        - Header compression (smaller requests and responses)
+
+```
+# with this the server will support both HTTP/1.1 and HTTP/2
+server.http2.enabled=true
+```
+
+- H2 (SSL/TLS enabled), H2C (clear text)
+
+- when you create reactive system, try to use reactive libraries for your application!
+    - R2DBC, Mongo, Redis, Kafka, Pulsar, ElasticSearch...
+    - what if I do not have? How to make it reactive?
+  ```java
+    Mono.fromSupplier(() -> yourlib.invokeMethod())
+    ...
+    .subscribeOn(Scheduler.boundedElastic()) // very important!
+  ```

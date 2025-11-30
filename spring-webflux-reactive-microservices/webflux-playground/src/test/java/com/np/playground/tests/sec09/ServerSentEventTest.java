@@ -30,7 +30,7 @@ public class ServerSentEventTest {
                 .expectStatus().is2xxSuccessful()
                 .returnResult(ProductDTO.class)
                 .getResponseBody()
-                .take(3) // to make the test determinstic and stable
+                .take(3) // to make the test deterministic and stable
                 .doOnNext(dto -> log.info("Received: {}", dto))
                 .collectList()
                 .as(StepVerifier::create)
